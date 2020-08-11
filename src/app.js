@@ -16,35 +16,24 @@ app.use(express.static(publicDir));
 
 app.get('', (req, res) => {
     res.render('index', {
-        title: 'Weather App'
+        title: 'Weather App',
+        name: 'Bhanu Kiran'
     });
 });
 
 app.get('/about', (req, res) => {
     res.render('about', {
-        title: 'About'
+        title: 'About',
+        name: 'Bhanu Kiran'
     });
 });
 
 app.get('/help', (req, res) => {
     res.render('help', {
-        title: 'Help'
+        title: 'Help',
+        name: 'Bhanu Kiran'
     });
 });
-
-// app.get('/help', (req, res) => {
-//     res.send([{
-//         name: 'Raj',
-//         age: 12
-//     },{
-//         name: 'Sam',
-//         age: 13
-//     }]);
-// });
-
-// app.get('/about', (req, res) => {
-//     res.send('<h1>About</h1>');
-// });
 
 app.get('/weather', (req, res) => {
     res.send({
@@ -62,6 +51,19 @@ app.get('/weather', (req, res) => {
     });
 });
 
+app.get('/help/*', (req, res) => {
+    res.render('error', {
+        title: '404',
+        error: 'Help article not found',
+    });
+});
+
+app.get('*', (req, res) => {
+    res.render('error', {
+        title: 404,
+        error: 'Page not found',
+    });
+});
 
 app.listen(3000, () => {
     console.log('Server is up and running at port 3000');
