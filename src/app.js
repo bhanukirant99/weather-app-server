@@ -1,6 +1,8 @@
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
+const geocode = require('./utils/geocode');
+const forecast = require('./utils/forecast');
 
 const app = express();
 
@@ -36,20 +38,46 @@ app.get('/help', (req, res) => {
 });
 
 app.get('/weather', (req, res) => {
-    res.send({
-        place_name: "Whoopie, вул. Пушкінська, 31, Одеса, Odessa, Ukraine",
-        center: [
-        30.742241,
-        46.477855
-        ],
-        geometry: {
-            coordinates: [
-                30.742241,
-                46.477855
-            ]
+    const address = req.query.address;
+    if(!address) {
+        return res.send ({
+            error: 'Please provide a address to view the weather report'
+        });
+    }   else {
+            geocode(address, (error, {latitude, longitude, location}) => {
+                if (error) {
+                    return res.send(error);
+                }
+                forecast(latitude, longitude, (error, forecastData) => {
+                    if (error) {
+                        return res.send(error);
+                    }
+                    res.send({
+                        address: req.query.address,
+                        location,
+                        forecast: forecastData
+                    });
+                });
+            });
+            console.log(req.query)
+            // res.send({
+            //     place_name: "Whoopie, вул. Пушкінська, 31, Одеса, Odessa, Ukraine",
+            //     forecast: "Its' raining"
+            // });
         }
-    });
 });
+
+app.get('/test', (req, res) => {
+    if(!req.place) {
+        return res.send ({
+            error: 'Please provide a location to view the weather report'
+        });
+    }
+    console.log(req.query);
+    res.send({
+        test: 'working'
+    })
+})
 
 app.get('/help/*', (req, res) => {
     res.render('error', {
