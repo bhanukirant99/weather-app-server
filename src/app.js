@@ -47,7 +47,7 @@ app.get('/weather', (req, res) => {
             geocode(address, (error, {latitude, longitude, location} = {}) => {
                 if (error) {
                     return res.send({
-                        error: 'Unable to locate'
+                        error: 'Unable to locate the Place, try another location'
                     });
                 }
                 forecast(latitude, longitude, (error, forecastData) => {
